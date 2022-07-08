@@ -112,7 +112,7 @@ int main(int argc, char *argv[]);												//主线程处理IO
 
 测试结果如下：（通过）
 
-![1000-5](/image/1000-5.png)
+![](/image/1000-5.png)
 
 加大压力，这次测试5000个客户访问，每个停留30秒种
 
@@ -122,4 +122,4 @@ int main(int argc, char *argv[]);												//主线程处理IO
 
 测试结果如下：（通过）
 
-![image-5000-30](/image/5000-30.png)
+![](/image/5000-30.png)

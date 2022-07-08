@@ -55,10 +55,10 @@ Locker.h
 
 ```c++
 //互斥锁类
-Locker(); 										//创建互斥锁
-~Locker(); 										//销毁互斥锁
-bool lock(); 									//上锁
-bool unlock(); 								//解锁
+Locker();    //创建互斥锁
+~Locker();    //销毁互斥锁
+bool lock();    //上锁
+bool unlock();    //解锁
 pthread_mutex_t *getMutex(); 	//获得互斥锁
 //条件变量类
 ConditionVariable();    //创建条件变量

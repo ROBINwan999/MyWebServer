@@ -1,8 +1,8 @@
-# 关于本项目
+# 项目介绍
 
 Webserver是我在学习Linux下网络编程的时候使用C++编写的一个小型http服务器，用于实践，以及帮助我加深对多线程，网络通信和服务器程序的理解。
 
-# 编译
+# 项目启动
 
 ## Linux平台，GCC编译器
 
@@ -88,7 +88,7 @@ int main(int argc, char *argv[]);    //主线程处理IO
 
 建议源码阅读顺序: Locker -> ThreadPool -> HttpConnection -> main
 
-## 压力测试
+# 压力测试
 
 测试工具webbench
 

@@ -58,21 +58,21 @@ Locker.h
 ```c++
 //互斥锁类
 Locker();    //创建互斥锁
-~Locker();    //销毁互斥锁
+~Locker();   //销毁互斥锁
 bool lock();    //上锁
-bool unlock();    //解锁
+bool unlock();  //解锁
 pthread_mutex_t *getMutex(); 	//获得互斥锁
 //条件变量类
 ConditionVariable();    //创建条件变量
 ~ConditionVariable();   //销毁条件变量
 bool wait(pthread_mutex_t *mutex);    //阻塞线程等待唤醒
 bool timeWait(pthread_mutex_t *mutex, struct timespec time);	//阻塞线程等待时间唤醒
-bool signal();    //唤醒1+个线程
-bool broadCast();    //唤醒所有线程
+bool signal();     //唤醒1+个线程
+bool broadCast();  //唤醒所有线程
 //信号量类
 Semaphore();    //缺省构造信号量为0
 Semaphore(int num); //带参构造指定信号量
-~Semaphore();    //销毁信号量
+~Semaphore();   //销毁信号量
 bool wait();    //阻塞信号量
 bool post();    //增加信号量
 ```
@@ -82,7 +82,7 @@ main.cpp
 ```c++
 extern void addfd(int epollfd, int fd, bool one_shot);	//添加文件描述符
 extern void removefd(int epollfd, int fd);    //删除文件描述符
-void addSignal(int sig, void(handler)(int));    //添加信号量
+void addSignal(int sig, void(handler)(int));  //添加信号量
 int main(int argc, char *argv[]);    //主线程处理IO
 ```
 

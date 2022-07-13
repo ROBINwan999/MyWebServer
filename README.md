@@ -1,3 +1,5 @@
+[English version](https://github.com/ROBINwan999/web-server/blob/main/README_en.md)
+
 # 项目介绍
 
 Webserver是我在学习Linux下网络编程的时候使用C/C++编写的一个小型http服务器，用于实践，以及帮助我加深对多线程，网络通信和服务器程序的理解。

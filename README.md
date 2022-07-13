@@ -1,4 +1,4 @@
-[English version](https://github.com/ROBINwan999/web-server/blob/main/README_en.md)
+[English version](https://github.com/ROBINwan999/web-server/tree/main/web-server-en)
 
 # 项目介绍
 

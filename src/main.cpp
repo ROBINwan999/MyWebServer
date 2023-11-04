@@ -1,25 +1,26 @@
-#include <sys/socket.h>
-#include <sys/epoll.h>
-#include <netinet/in.h>
 #include <arpa/inet.h>
-#include <unistd.h>
 #include <fcntl.h>
+#include <netinet/in.h>
+#include <sys/epoll.h>
+#include <sys/socket.h>
+#include <unistd.h>
+
+#include <cerrno>
 #include <cstdio>
 #include <cstdlib>
 #include <cstring>
-#include <cerrno>
+
+#include "http_connection.h"
 #include "locker.h"
 #include "threadpool.h"
-#include "http_connection.h"
 
-#define MAX_FD 65536           // 最大的文件描述符个数
-#define MAX_EVENT_NUMBER 10000 // 监听的最大的事件数量
+#define MAX_FD 65536            // 最大的文件描述符个数
+#define MAX_EVENT_NUMBER 10000  // 监听的最大的事件数量
 
 extern void addfd(int epollfd, int fd, bool one_shot);
 extern void removefd(int epollfd, int fd);
 
-void addSignal(int sig, void(handler)(int))
-{
+void addSignal(int sig, void(handler)(int)) {
     struct sigaction signal_action;
     memset(&signal_action, '\0', sizeof(signal_action));
     signal_action.sa_handler = handler;
@@ -27,11 +28,8 @@ void addSignal(int sig, void(handler)(int))
     assert(sigaction(sig, &signal_action, NULL) != -1);
 }
 
-int main(int argc, char *argv[])
-{
-
-    if (argc <= 1)
-    {
+int main(int argc, char *argv[]) {
+    if (argc <= 1) {
         printf("usage: %s port_number\n", basename(argv[0]));
         return 1;
     }
@@ -40,12 +38,9 @@ int main(int argc, char *argv[])
     addSignal(SIGPIPE, SIG_IGN);
 
     ThreadPool<HttpConnection> *pool = NULL;
-    try
-    {
+    try {
         pool = new ThreadPool<HttpConnection>;
-    }
-    catch (...)
-    {
+    } catch (...) {
         return 1;
     }
 
@@ -72,58 +67,41 @@ int main(int argc, char *argv[])
     addfd(epollfd, listenfd, false);
     HttpConnection::epollfd_ = epollfd;
 
-    while (true)
-    {
-
+    while (true) {
         int number = epoll_wait(epollfd, events, MAX_EVENT_NUMBER, -1);
 
-        if ((number < 0) && (errno != EINTR))
-        {
+        if ((number < 0) && (errno != EINTR)) {
             printf("epoll failure\n");
             break;
         }
 
-        for (int i = 0; i < number; i++)
-        {
+        for (int i = 0; i < number; i++) {
             int sockfd = events[i].data.fd;
-            if (sockfd == listenfd)
-            {
+            if (sockfd == listenfd) {
                 struct sockaddr_in client_address;
                 socklen_t client_addrlength = sizeof(client_address);
                 int connfd = accept(listenfd, (struct sockaddr *)&client_address, &client_addrlength);
 
-                if (connfd < 0)
-                {
+                if (connfd < 0) {
                     printf("errno is: %d\n", errno);
                     continue;
                 }
 
-                if (HttpConnection::user_count_ >= MAX_FD)
-                {
+                if (HttpConnection::user_count_ >= MAX_FD) {
                     close(connfd);
                     continue;
                 }
                 users[connfd].init(connfd, client_address);
-            }
-            else if (events[i].events & (EPOLLRDHUP | EPOLLHUP | EPOLLERR))
-            {
+            } else if (events[i].events & (EPOLLRDHUP | EPOLLHUP | EPOLLERR)) {
                 users[sockfd].closeConnection();
-            }
-            else if (events[i].events & EPOLLIN)
-            {
-                if (users[sockfd].read())
-                {
+            } else if (events[i].events & EPOLLIN) {
+                if (users[sockfd].read()) {
                     pool->addTask(users + sockfd);
-                }
-                else
-                {
+                } else {
                     users[sockfd].closeConnection();
                 }
-            }
-            else if (events[i].events & EPOLLOUT)
-            {
-                if (!users[sockfd].write())
-                {
+            } else if (events[i].events & EPOLLOUT) {
+                if (!users[sockfd].write()) {
                     users[sockfd].closeConnection();
                 }
             }
